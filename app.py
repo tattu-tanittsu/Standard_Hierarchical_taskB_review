@@ -6,7 +6,7 @@ import pandas as pd
 # ---------------------------------------------------------
 st.set_page_config(page_title="タスクB：レビュー対象の確認", layout="centered")
 
-# ★変更：ここにお題（導入文）を定義します
+# ここにお題（導入文）を定義します
 INTRO_TEXT = """
 地獄を統べる大魔王は、人間界の視察のため、数百年ぶりに渋谷のスクランブル交差点に降り立った。
 周囲の人間は、大魔王を見ても逃げ惑うどころか、四角い板（スマホ）を見つめて歩いている。
@@ -14,16 +14,16 @@ INTRO_TEXT = """
 """
 
 # ---------------------------------------------------------
-# データの読み込み関数（仕組みは変更なし）
+# データの読み込み関数
 # ---------------------------------------------------------
 @st.cache_data
 def load_data():
     try:
-        # ファイル読み込み処理（そのまま）
+        # ファイル読み込み処理
         df_std = pd.read_csv('standard_group_assignments_with_stories.csv')
         df_hier = pd.read_csv('hierarchical_group_assignments_with_stories.csv')
 
-        # ID照合のため文字列型に統一（そのまま）
+        # ID照合のため文字列型に統一
         df_std['Reviewer_ID'] = df_std['Reviewer_ID'].astype(str).apply(lambda x: x.replace('.0', ''))
         df_hier['Reviewer_ID'] = df_hier['Reviewer_ID'].astype(str).apply(lambda x: x.replace('.0', ''))
 
@@ -40,12 +40,11 @@ st.title("タスクB：レビュー対象の表示")
 st.markdown("""
 ### 手順
 1. 下のボックスにあなたの **ユーザーID** を入力してください。  
-2. **【お題（導入文）】**と、それに続く **3つのストーリー** が表示されます。
+2. 【お題（導入文）】と、それに続くストーリーが **3つ** 表示されます。
 3. それぞれを読み比べ、**クラウドワークスの作業画面に戻って** 回答を入力してください。
-""") # ★変更：手順の文言をユーザーID表記やお題のことに合わせ修正
-
+""") 
 # ID入力フォーム
-# ★変更：変数名を user_id にし、ラベルを「ユーザーID」に変更
+# 変数名を user_id にし、ラベルを「ユーザーID」に
 user_id = st.text_input("ここにユーザーIDを入力 (半角数字)", "").strip()
 
 # データ読み込みエラー時の警告
@@ -53,8 +52,8 @@ if df_std_assign is None or df_hier_assign is None:
     st.error("エラー：データファイルが読み込めません。")
     st.stop()
 
-if user_id: # ★変更：変数名変更に伴う修正
-    # --- グループ判定（仕組みは変更なし）---
+if user_id: 
+    # --- グループ判定---
     std_row = df_std_assign[df_std_assign['Reviewer_ID'] == user_id]
     hier_row = df_hier_assign[df_hier_assign['Reviewer_ID'] == user_id]
 
@@ -68,7 +67,7 @@ if user_id: # ★変更：変数名変更に伴う修正
     # --- 画面表示 ---
     if target_row is not None:
         st.success("確認できました。以下の3つのストーリーをレビューしてください。")
-        st.info("💡 ヒント：お題（導入文）と各ストーリーの繋がりを意識して読んでください。") # ★変更：ヒントを追加
+        st.info("お題（導入文）と各ストーリーの繋がりを意識して読んでください。") # ヒントを追加
 
         st.write("---")
 
@@ -82,15 +81,15 @@ if user_id: # ★変更：変数名変更に伴う修正
             if str(r_story) == 'N/A' or pd.isna(r_story):
                 st.warning("※ この項目のレビュー対象はありません（クラウドワークスの回答欄には「なし」と記入してください）")
             else:
-                # ★変更：ここから下がお題を表示する追加ロジック
+                # ここから下がお題を表示する追加ロジック
                 st.markdown("**【お題（導入文）】**")
                 st.markdown(f"> {INTRO_TEXT}") # 引用表示で見やすくする
 
                 st.markdown(f"**【ストーリー{i}の内容】**")
                 st.success(r_story) # ストーリー本文を目立たせる
 
-                st.caption(f"👆 読み終わったら、クラウドワークスの設問 **「ストーリー{i}」** に回答を入力してください。")
-                # ★変更：ここまでが追加ロジック
+                st.caption(f"👆 読み終わったら、クラウドワークスの **ストーリー{i}に関するすべての設問（評価・記述）** に回答してください。")
+                # ここまでが追加ロジック
 
             st.write("---")
 
