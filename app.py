@@ -20,8 +20,8 @@ INTRO_TEXT = """
 def load_data():
     try:
         # ファイル読み込み処理
-        df_std = pd.read_csv('standard_group_assignments_with_stories.csv')
-        df_hier = pd.read_csv('hierarchical_group_assignments_with_stories.csv')
+        df_std = pd.read_csv('standard_group_data.csv')
+        df_hier = pd.read_csv('hierarchical_group_data.csv')
 
         # ID照合のため文字列型に統一
         df_std['Reviewer_ID'] = df_std['Reviewer_ID'].astype(str).apply(lambda x: x.replace('.0', ''))
